@@ -1,7 +1,7 @@
 import itertools
-from .card import Card
-from .deck import Deck
-from .lookup import LookupTable
+from card import Card
+from deck import Deck
+from lookup import LookupTable
 
 class Evaluator(object):
     """
@@ -19,6 +19,7 @@ class Evaluator(object):
         self.table = LookupTable()
         
         self.hand_size_map = {
+            2: self._two,
             5: self._five,
             6: self._six,
             7: self._seven
@@ -31,8 +32,21 @@ class Evaluator(object):
         Supports empty board, etc very flexible. No input validation 
         because that's cycles!
         """
-        all_cards = cards + board
+        if len(board) >= 3: 
+            all_cards = cards + board
+        elif len(board) == 0:
+            all_cards = cards
         return self.hand_size_map[len(all_cards)](all_cards)
+
+    def _two(self, cards):
+        card_num = []
+        for i in cards:
+            tmp = Card.int_to_str(i)
+            if len(card_num) == 0:
+                card_num.append(tmp[0])
+            elif tmp[0] == card_num[0]:
+                return 2860
+        return 7462
 
     def _five(self, cards):
         """
